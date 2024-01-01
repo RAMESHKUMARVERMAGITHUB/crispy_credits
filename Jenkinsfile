@@ -70,6 +70,13 @@ pipeline{
         //         sh "docker run -d --name uber -p 3000:3000 rameshkumarverma/candycrush:latest"
         //     }
         // }
+        stage("Deploy"){
+            steps {
+                echo "Deploying the container"
+                sh "docker-compose down && docker-compose up -d"
+                
+            }
+        }
         stage('Deploy to kubernets'){
             steps{
                 script{
