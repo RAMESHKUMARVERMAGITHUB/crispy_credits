@@ -15,14 +15,14 @@ pipeline{
         }
         stage('Checkout from Git'){
             steps{
-                git branch: 'main', url: 'https://github.com/RAMESHKUMARVERMAGITHUB/Candycrush.git'
+                git branch: 'main', url: 'https://github.com/RAMESHKUMARVERMAGITHUB/crispy_credits.git'
             }
         }
         stage("Sonarqube Analysis "){
             steps{
                 withSonarQubeEnv('sonar-server') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=candycrush \
-                    -Dsonar.projectKey=candycrush'''
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=crispy_credits \
+                    -Dsonar.projectKey=crispy_credits'''
                 }
             }
         }
@@ -53,21 +53,21 @@ pipeline{
             steps{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
-                       sh "docker build -t rameshkumarverma/candycrush:latest ."
-                       // sh "docker tag uber rameshkumarverma/uber:latest "
-                       sh "docker push rameshkumarverma/candycrush:latest"
+                       sh "docker build -t rameshkumarverma/crispy_credits:latest ."
+                       // sh "docker tag uber rameshkumarverma/crispy_credits:latest "
+                       sh "docker push rameshkumarverma/crispy_credits:latest"
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image rameshkumarverma/candycrush:latest > trivyimage.txt"
+                sh "trivy image rameshkumarverma/crispy_credits:latest > trivyimage.txt"
             }
         }
         // stage("deploy_docker"){
         //     steps{
-        //         sh "docker run -d --name uber -p 3000:3000 rameshkumarverma/candycrush:latest"
+        //         sh "docker run -d --name uber -p 3000:3000 rameshkumarverma/crispy_credits:latest"
         //     }
         // }
         stage("Deploy"){
@@ -77,17 +77,17 @@ pipeline{
                 
             }
         }
-        stage('Deploy to kubernets'){
-            steps{
-                script{
-                    // dir('K8S') {
-                        withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'k8s', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
-                                sh 'kubectl apply -f deployment-service.yml'
-                                // sh 'kubectl apply -f service.yml'
-                        }
-                    // }
-                }
-            }
-        }
+        // stage('Deploy to kubernets'){
+        //     steps{
+        //         script{
+        //             // dir('K8S') {
+        //                 withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'k8s', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
+        //                         sh 'kubectl apply -f deployment-service.yml'
+        //                         // sh 'kubectl apply -f service.yml'
+        //                 }
+        //             // }
+        //         }
+        //     }
+        // }
     }
 }
